@@ -1,0 +1,17 @@
+{
+  "name": "node-exercise",
+  "version": "1.0.0",
+  "description": "testing some code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node App",
+    "start:dev": "nodemon App"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
