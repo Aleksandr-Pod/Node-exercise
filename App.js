@@ -1,4 +1,4 @@
-// console.clear();
+ console.clear();
 // const { userOne, userTwo } = require('./testFolder');
 // console.log("Result:", userTwo);
 
@@ -155,7 +155,7 @@
 //    Переменные окружения
 const dotenv = require('dotenv');
 dotenv.config();
-const { DB_HOST, PORT = 3000 } = process.env;
+const { DB_HOST, PORT = 3030 } = process.env;
 
 const express = require('express');
 const app = express();
@@ -165,15 +165,22 @@ const contactsRouter = require('./routes/api/contacts');
 const mongoose = require('mongoose');
 app.use(express.json());
 app.use(cors());
-app.use('./api/contacts', contactsRouter);
+app.use('/cc', contactsRouter);
+app.use((req, res) => {
+  res.status(200).json({
+    message: 'OK !'
+  })
+});
+function connect() {
+  try {
+    app.listen(PORT, () => console.log('listening port:', PORT));
 
-mongoose.connect(DB_HOST)
-  .then(() => {
-    console.log("Connected");
-    app.listen(PORT);
-  })
-  .catch(err => {
-    console.log(err.message);
-    process.exit(1)
-  })
+    mongoose.connect(DB_HOST)
+      .then(() => console.log("Connected to MongoDB - Contacts_Book"))
+  } catch (error) {
+        process.exit(1)
+  }
+}
+
+connect();
 
