@@ -10,13 +10,14 @@ const contactSchema = Schema({
 })
 const Contact = model('contacts', contactSchema);
 
-const getAll = (req, res) => {
+const getAll = async (req, res) => {
     console.log('работает getAll');
   try {
-    // const result = await Contact.find({})
-      res.status(123).json({
+      const result = await Contact.find()
+      res.status(200).json({
           message: 'success',
-          code: 200
+          code: 200,
+          result
       })
   } catch (error) {
       res.status(400).json({

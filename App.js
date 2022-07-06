@@ -165,18 +165,15 @@ const contactsRouter = require('./routes/api/contacts');
 const mongoose = require('mongoose');
 app.use(express.json());
 app.use(cors());
-app.use('/cc', contactsRouter);
-app.use((req, res) => {
-  res.status(200).json({
-    message: 'OK !'
-  })
-});
+app.use('/api/contacts', contactsRouter);
+
 function connect() {
   try {
-    app.listen(PORT, () => console.log('listening port:', PORT));
-
     mongoose.connect(DB_HOST)
-      .then(() => console.log("Connected to MongoDB - Contacts_Book"))
+      .then(() => {
+        console.log("Connected to MongoDB - Contacts_Book");
+        app.listen(PORT, () => console.log('listening port:', PORT)); 
+      })
   } catch (error) {
         process.exit(1)
   }
