@@ -8,7 +8,7 @@ const contactSchema = Schema({
     email: String,
     phone: String
 })
-const Contact = model('contacts', contactSchema);
+const Contact = model('contact', contactSchema);
 
 const getAll = async (req, res) => {
     console.log('работает getAll');
@@ -26,8 +26,25 @@ const getAll = async (req, res) => {
     })
   }
 }
-
+const add = async (req, res) => {
+    console.log('работает =add=');
+  try {
+      const result = await Contact.create(req.body)
+      res.status(201).json({
+          message: 'success',
+          code: 201,
+          result
+      })
+  } catch (error) {
+      res.status(400).json({
+          messaage: 'Error from getAll',
+          error
+    })
+  }
+}
 router.get('/', getAll);
+router.post('/', add);
+
 module.exports = router;
 
 
