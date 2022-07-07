@@ -11,7 +11,6 @@ const contactSchema = Schema({
 const Contact = model('contact', contactSchema);
 
 const getAll = async (req, res) => {
-    console.log('работает getAll');
   try {
       const result = await Contact.find()
       res.status(200).json({
@@ -27,7 +26,6 @@ const getAll = async (req, res) => {
   }
 }
 const add = async (req, res) => {
-    console.log('работает =add=');
   try {
       const result = await Contact.create(req.body)
       res.status(201).json({

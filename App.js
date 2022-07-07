@@ -151,10 +151,7 @@
 
 //                Module 3
 
-// const DB_HOST = "mongodb+srv://Firestarter:jps8KhNs5WjB262@contactscluster.cahep.mongodb.net/contacts?retryWrites=true&w=majority"
-//    Переменные окружения
-const dotenv = require('dotenv');
-dotenv.config();
+require('dotenv').config();
 const { DB_HOST, PORT = 3030 } = process.env;
 
 const express = require('express');
@@ -167,17 +164,12 @@ app.use(express.json());
 app.use(cors());
 app.use('/api/contacts', contactsRouter);
 
-function connect() {
-  try {
-    mongoose.connect(DB_HOST)
-      .then(() => {
-        console.log("Connected to MongoDB - Contacts_Book");
-        app.listen(PORT, () => console.log('listening port:', PORT)); 
-      })
-  } catch (error) {
-        process.exit(1)
-  }
-}
-
-connect();
-
+mongoose.connect(DB_HOST)
+  .then(() => {
+    console.log("Connected to MongoDB - Contacts_Book");
+    app.listen(PORT, () => console.log('listening port:', PORT)); 
+  })
+  .catch((err) => {
+    console.log(err.message)
+    process.exit(1)
+  })
