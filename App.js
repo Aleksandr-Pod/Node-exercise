@@ -1,4 +1,4 @@
- console.clear();
+//  console.clear();
 // const { userOne, userTwo } = require('./testFolder');
 // console.log("Result:", userTwo);
 
@@ -151,25 +151,53 @@
 
 //                Module 3
 
-require('dotenv').config();
-const { DB_HOST, PORT = 3030 } = process.env;
+// require('dotenv').config();
+// const { DB_HOST, PORT = 3030 } = process.env;
 
-const express = require('express');
-const app = express();
-const cors = require('cors');
-const contactsRouter = require('./routes/api/contacts');
+// const express = require('express');
+// const app = express();
+// const cors = require('cors');
+// const contactsRouter = require('./routes/api/contacts');
 
-const mongoose = require('mongoose');
-app.use(express.json());
-app.use(cors());
-app.use('/api/contacts', contactsRouter);
+// const mongoose = require('mongoose');
+// app.use(express.json());
+// app.use(cors());
+// app.use('/api/contacts', contactsRouter);
 
-mongoose.connect(DB_HOST)
-  .then(() => {
-    console.log("Connected to MongoDB - Contacts_Book");
-    app.listen(PORT, () => console.log('listening port:', PORT)); 
-  })
-  .catch((err) => {
-    console.log(err.message)
-    process.exit(1)
-  })
+// mongoose.connect(DB_HOST)
+//   .then(() => {
+//     console.log("Connected to MongoDB - Contacts_Book");
+//     app.listen(PORT, () => console.log('listening port:', PORT));
+//   })
+//   .catch((err) => {
+//     console.log(err.message)
+//     process.exit(1)
+//   })
+
+
+//                 Module 6
+//              Email - Docker
+require('dotenv').config()
+
+const nodemailer = require('nodemailer')
+const config = {
+  host: 'smtp.meta.ua',
+  port: 465,
+  secure: true,
+  auth: {
+    user: 'stdfire@meta.ua',
+    pass: process.env.EMAIL_PASSWORD,
+  },
+}
+const transporter = nodemailer.createTransport(config)
+
+const emailOptions = {
+  from: 'stdfire@meta.ua',
+  to: 'stdfire@gmail.com',
+  subject: 'Nodemailer test',
+  text: 'Привет. Мы тестируем отправку писем!',
+}
+transporter
+  .sendMail(emailOptions)
+  .then(info => console.log(info))
+  .catch(err => console.log(err.message));
