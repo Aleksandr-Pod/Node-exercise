@@ -176,28 +176,78 @@
 
 
 //                 Module 6
-//              Email - Docker
-require('dotenv').config()
+//              Email - Websocket
+// require('dotenv').config()
 
-const nodemailer = require('nodemailer')
-const config = {
-  host: 'smtp.meta.ua',
-  port: 465,
-  secure: true,
-  auth: {
-    user: 'stdfire@meta.ua',
-    pass: process.env.EMAIL_PASSWORD,
-  },
-}
-const transporter = nodemailer.createTransport(config)
+// const nodemailer = require('nodemailer')
+// const config = {
+//   host: 'smtp.meta.ua',
+//   port: 465,
+//   secure: true,
+//   auth: {
+//     user: 'stdfire@meta.ua',
+//     pass: process.env.EMAIL_PASSWORD,
+//   },
+// }
+// const transporter = nodemailer.createTransport(config)
 
-const emailOptions = {
-  from: 'stdfire@meta.ua',
-  to: 'stdfire@gmail.com',
-  subject: 'Nodemailer test',
-  text: 'Привет. Мы тестируем отправку писем!',
-}
-transporter
-  .sendMail(emailOptions)
-  .then(info => console.log(info))
-  .catch(err => console.log(err.message));
+// const emailOptions = {
+//   from: 'stdfire@meta.ua',
+//   to: 'stdfire@gmail.com',
+//   subject: 'Nodemailer test',
+//   text: 'Привет. Мы тестируем отправку писем!',
+// }
+// transporter
+//   .sendMail(emailOptions)
+//   .then(info => console.log(info))
+//   .catch(err => console.log(err.message));
+
+
+  //              Web Socket
+
+const ws = new require('ws');
+const wsServer = new ws.Server({ port: 1919 })
+// вешаем обработчик событий
+const newUsers = [];
+const allColors = ["black", "red", "green", "blue", "yellow", "white"];
+const clients = []
+
+wsServer.on("connection", (newClient) => {
+  clients.push(newClient)
+
+  clients.forEach(client => {
+    if (client !== newClient) client.send("К нам присоединился новый игрок")
+  })
+  newClient.on('message', data => { // входящие сообщения - обработка
+    const message = JSON.parse(data);
+    console.log('ws data income', message)
+
+    if (message.newUser) {
+      const newUserData = {
+        newUserName: message.newUser,
+        position: {y:0, x:newUsers.length},
+        color: allColors[newUsers.length]
+      }
+      newUsers.push(newUserData);
+
+      clients.forEach(client => {
+        client.send(JSON.stringify(newUsers));
+        console.log("From server - All users", newUsers)
+      })
+    }
+    if (message.move) {
+      console.log("move");
+
+      // sending move message to others
+      clients.forEach(client => {
+        if (client !== newClient) client.send(JSON.stringify(message))
+      });
+
+      // writing move of this user into server DB
+      newUsers.forEach( user => {
+        if (user.color === message.color) user.position = message.move;
+      })
+    }
+  })
+})
+
